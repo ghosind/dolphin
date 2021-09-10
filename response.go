@@ -54,26 +54,34 @@ func (resp *Response) write(rw http.ResponseWriter) {
 	io.Copy(rw, resp.body)
 }
 
+// SetBody Set response body.
 func (resp *Response) SetBody(data []byte) (int, error) {
 	return resp.body.Write(data)
 }
 
+// AddCookies Add cookies setting to response, it will set response HTTP
+// header "Set-Cookie" field.
 func (resp *Response) AddCookies(cookies ...*http.Cookie) {
 	resp.cookies = append(resp.cookies, cookies...)
 }
 
+// SetContentType Set response HTTP header "Content-Type" field to the
+// specific MIME type value.
 func (resp *Response) SetContentType(contentType string) {
 	resp.header.Set(HTTPHeaderContentType, contentType)
 }
 
+// AddHeader Add value to the specific response HTTP header field.
 func (resp *Response) AddHeader(key, val string) {
 	resp.header.Add(key, val)
 }
 
+// SetHeader Set value to the specific response HTTP header field.
 func (resp *Response) SetHeader(key, val string) {
 	resp.header.Set(key, val)
 }
 
+// SetStatusCode Set response status code.
 func (resp *Response) SetStatusCode(code int) error {
 	if code <= 0 || code > 999 {
 		return errors.New("invalid status code")
