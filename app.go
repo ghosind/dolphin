@@ -32,12 +32,13 @@ func (app *App) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	ctx.reset(req)
 
 	ctx.app = app
-	ctx.handlers = app.handlers
 
-	defer ctx.finalize()
+	ctx.Use(app.handlers...)
 
 	ctx.Next()
 	ctx.writeResponse(rw)
+
+	ctx.finalize()
 }
 
 func (app *App) Use(handlers ...HandlerFunc) {
