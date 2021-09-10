@@ -189,6 +189,10 @@ func (ctx *Context) Redirect(url string, statusCode ...int) {
 	ctx.Response.SetHeader(HTTPHeaderLocation, url)
 }
 
+func (ctx *Context) AddCookies(cookies ...*http.Cookie) {
+	ctx.Response.AddCookies(cookies...)
+}
+
 func (ctx *Context) SetHeader(key, val string) {
 	ctx.Response.SetHeader(key, val)
 }
