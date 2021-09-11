@@ -36,7 +36,6 @@ func debugPrintf(format string, args ...interface{}) {
 // variable "DOLPHIN_PORT". Port number should be greater than 0 and less
 // than 65535.
 func resolveListenAddr(port *int) string {
-
 	if port != nil && *port > 0 && *port < 65536 {
 		return fmt.Sprintf(":%d", *port)
 	}

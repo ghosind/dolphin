@@ -8,6 +8,7 @@ import (
 	"sync"
 )
 
+// Response is the HTTP response wrapper.
 type Response struct {
 	body *bytes.Buffer
 
@@ -24,6 +25,7 @@ var responsePool *sync.Pool = &sync.Pool{
 	},
 }
 
+// reset Reset response to initial state.
 func (resp *Response) reset() {
 	resp.body = &bytes.Buffer{}
 	resp.cookies = make([]*http.Cookie, 0)
@@ -31,6 +33,7 @@ func (resp *Response) reset() {
 	resp.statusCode = http.StatusOK
 }
 
+// write Write response to the specific HTTP response writer.
 func (resp *Response) write(rw http.ResponseWriter) {
 	if len(resp.cookies) > 0 {
 		for _, cookie := range resp.cookies {

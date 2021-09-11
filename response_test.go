@@ -5,8 +5,29 @@ import (
 	"testing"
 )
 
+func TestReset(t *testing.T) {
+	resp := responsePool.Get().(*Response)
+	resp.reset()
+
+	if len(resp.body.Bytes()) != 0 {
+		t.Errorf("Response body expect 0, actual %d", len(resp.body.Bytes()))
+	}
+
+	if len(resp.cookies) != 0 {
+		t.Errorf("Length of response cookies expect 0, actual %d", len(resp.cookies))
+	}
+
+	if len(resp.header) != 0 {
+		t.Errorf("Length of response header expect 0, actual %d", len(resp.header))
+	}
+
+	if resp.statusCode != 200 {
+		t.Errorf("Response status code expect 200, actual %d", resp.statusCode)
+	}
+}
+
 func TestSetStatus(t *testing.T) {
-	var resp *Response = &Response{}
+	resp := responsePool.Get().(*Response)
 	resp.reset()
 
 	err := resp.SetStatusCode(-1)
