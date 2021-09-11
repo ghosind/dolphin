@@ -4,7 +4,10 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 )
+
+var defaultPort string = ":8080"
 
 // setDebugMode Set global variable debugMode and enable debug mode if
 // environment variable "DOLPHIN_DEBUG" is set.
@@ -33,15 +36,22 @@ func debugPrintf(format string, args ...interface{}) {
 // variable "DOLPHIN_PORT". Port number should be greater than 0 and less
 // than 65535.
 func resolveListenAddr(port *int) string {
-	if port == nil || *port < 0 || *port > 65535 {
-		if port := os.Getenv("DOLPHIN_PORT"); port != "" {
-			debugPrintf("Get server port from env: %s", port)
-			return ":" + port
-		}
 
-		debugPrintf("No port setting, use default port 8080.")
-		return ":8080"
+	if port != nil && *port > 0 && *port < 65536 {
+		return fmt.Sprintf(":%d", *port)
 	}
 
-	return fmt.Sprintf(":%d", *port)
+	envPort := os.Getenv("DOLPHIN_PORT")
+	if envPort != "" {
+		port, err := strconv.Atoi(envPort)
+		if err != nil || port <= 0 || port > 65535 {
+			debugPrintf("Environment variable \"DOLPHIN_PORT\"(%s) is invalid: %s", envPort)
+			return defaultPort
+		}
+
+		return ":" + envPort
+	}
+
+	debugPrintf("No port setting, use default port 8080.")
+	return defaultPort
 }

@@ -51,7 +51,32 @@ func TestResolveListenAddr(t *testing.T) {
 		t.Errorf("Listening address expect \"%s\", actual \"%s\",", ":8080", addr)
 	}
 
-	// Get port from environment
+	// Get invalid port from environment
+	t.Setenv("DOLPHIN_PORT", "0")
+	addr = resolveListenAddr(nil)
+	if strings.Compare(addr, ":8080") != 0 {
+		t.Errorf("Listening address expect \"%s\", actual \"%s\",", ":8080", addr)
+	}
+
+	t.Setenv("DOLPHIN_PORT", "65536")
+	addr = resolveListenAddr(nil)
+	if strings.Compare(addr, ":8080") != 0 {
+		t.Errorf("Listening address expect \"%s\", actual \"%s\",", ":8080", addr)
+	}
+
+	t.Setenv("DOLPHIN_PORT", "test")
+	addr = resolveListenAddr(nil)
+	if strings.Compare(addr, ":8080") != 0 {
+		t.Errorf("Listening address expect \"%s\", actual \"%s\",", ":8080", addr)
+	}
+
+	t.Setenv("DOLPHIN_PORT", "5000-test")
+	addr = resolveListenAddr(nil)
+	if strings.Compare(addr, ":8080") != 0 {
+		t.Errorf("Listening address expect \"%s\", actual \"%s\",", ":8080", addr)
+	}
+
+	// Get valid port from environment
 	t.Setenv("DOLPHIN_PORT", "5000")
 	addr = resolveListenAddr(nil)
 	if strings.Compare(addr, ":5000") != 0 {
