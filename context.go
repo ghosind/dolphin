@@ -81,6 +81,10 @@ func (ctx *Context) Use(handlers ...HandlerFunc) {
 	ctx.handlers = append(ctx.handlers, handlers...)
 }
 
+func (ctx *Context) Log(fmt string, args ...interface{}) {
+	ctx.app.log(fmt, args...)
+}
+
 func (ctx *Context) Get(key string) (interface{}, bool) {
 	val, ok := ctx.state[key]
 
