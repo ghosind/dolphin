@@ -21,8 +21,11 @@ func TestReset(t *testing.T) {
 		t.Errorf("Length of response header expect 0, actual %d", len(resp.header))
 	}
 
-	if resp.statusCode != 200 {
-		t.Errorf("Response status code expect 200, actual %d", resp.statusCode)
+	if resp.statusCode != http.StatusOK {
+		t.Errorf("Response status code expect %d, actual %d",
+			http.StatusOK,
+			resp.statusCode,
+		)
 	}
 }
 
@@ -34,31 +37,47 @@ func TestSetStatus(t *testing.T) {
 	if err == nil {
 		t.Errorf("Set status code as -1 expect return error, actual return nil")
 	}
-	if resp.statusCode != 200 {
-		t.Errorf("Set status code as -1 expect resp.statusCode is 200, actual %d", resp.statusCode)
+	if resp.StatusCode() != http.StatusOK {
+		t.Errorf("Set status code as -1 expect resp.statusCode is 200%d, actual %d",
+			http.StatusOK,
+			resp.statusCode,
+		)
 	}
 
 	err = resp.SetStatusCode(0)
 	if err == nil {
 		t.Errorf("Set status code as 0 expect return error, actual return nil")
 	}
-	if resp.statusCode != 200 {
-		t.Errorf("Set status code as 0 expect resp.statusCode is 200, actual %d", resp.statusCode)
+	if resp.StatusCode() != http.StatusOK {
+		t.Errorf("Set status code as 0 expect resp.statusCode is %d, actual %d",
+			http.StatusOK,
+			resp.statusCode,
+		)
 	}
 
 	err = resp.SetStatusCode(1000)
 	if err == nil {
 		t.Errorf("Set status code as 1000 expect return error, actual return nil")
 	}
-	if resp.statusCode != 200 {
-		t.Errorf("Set status code as 1000 expect resp.statusCode is 200, actual %d", resp.statusCode)
+	if resp.StatusCode() != http.StatusOK {
+		t.Errorf("Set status code as 1000 expect resp.statusCode is %d, actual %d",
+			http.StatusOK,
+			resp.statusCode,
+		)
 	}
 
 	err = resp.SetStatusCode(http.StatusCreated)
 	if err != nil {
-		t.Errorf("Set status code as %d expect return nil, actual return %v", http.StatusCreated, err)
+		t.Errorf("Set status code as %d expect return nil, actual return %v",
+			http.StatusCreated,
+			err,
+		)
 	}
-	if resp.statusCode != http.StatusCreated {
-		t.Errorf("Set status code as %d expect resp.statusCode is 200, actual %d", http.StatusCreated, resp.statusCode)
+	if resp.StatusCode() != http.StatusCreated {
+		t.Errorf("Set status code as %d expect resp.statusCode is %d, actual %d",
+			http.StatusCreated,
+			http.StatusCreated,
+			resp.statusCode,
+		)
 	}
 }

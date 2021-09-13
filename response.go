@@ -25,7 +25,7 @@ var responsePool *sync.Pool = &sync.Pool{
 	},
 }
 
-// reset Reset response to initial state.
+// reset resets response to initial state.
 func (resp *Response) reset() {
 	resp.body = &bytes.Buffer{}
 	resp.cookies = make([]*http.Cookie, 0)
@@ -33,7 +33,7 @@ func (resp *Response) reset() {
 	resp.statusCode = http.StatusOK
 }
 
-// write Write response to the specific HTTP response writer.
+// write writes response to the specific HTTP response writer.
 func (resp *Response) write(rw http.ResponseWriter) {
 	if len(resp.cookies) > 0 {
 		for _, cookie := range resp.cookies {
@@ -57,34 +57,34 @@ func (resp *Response) write(rw http.ResponseWriter) {
 	io.Copy(rw, resp.body)
 }
 
-// SetBody Set response body.
+// SetBody sets response body.
 func (resp *Response) SetBody(data []byte) (int, error) {
 	return resp.body.Write(data)
 }
 
-// AddCookies Add cookies setting to response, it will set response HTTP
+// AddCookies adds cookies setting to response, it will set response HTTP
 // header "Set-Cookie" field.
 func (resp *Response) AddCookies(cookies ...*http.Cookie) {
 	resp.cookies = append(resp.cookies, cookies...)
 }
 
-// SetContentType Set response HTTP header "Content-Type" field to the
+// SetContentType sets response HTTP header "Content-Type" field to the
 // specific MIME type value.
 func (resp *Response) SetContentType(contentType string) {
 	resp.header.Set(HTTPHeaderContentType, contentType)
 }
 
-// AddHeader Add value to the specific response HTTP header field.
+// AddHeader adds value to the specific response HTTP header field.
 func (resp *Response) AddHeader(key, val string) {
 	resp.header.Add(key, val)
 }
 
-// SetHeader Set value to the specific response HTTP header field.
+// SetHeader sets value to the specific response HTTP header field.
 func (resp *Response) SetHeader(key, val string) {
 	resp.header.Set(key, val)
 }
 
-// SetStatusCode Set response status code.
+// SetStatusCode sets response status code.
 func (resp *Response) SetStatusCode(code int) error {
 	if code <= 0 || code > 999 {
 		return errors.New("invalid status code")
@@ -93,4 +93,9 @@ func (resp *Response) SetStatusCode(code int) error {
 	resp.statusCode = code
 
 	return nil
+}
+
+// StatusCode gets response status code.
+func (resp *Response) StatusCode() int {
+	return resp.statusCode
 }
