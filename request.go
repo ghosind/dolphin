@@ -9,6 +9,7 @@ import (
 	"sync"
 )
 
+// Request is the wrapped HTTP request object.
 type Request struct {
 	body *string
 
@@ -25,12 +26,14 @@ var requestPool *sync.Pool = &sync.Pool{
 	},
 }
 
+// reset resets request object to initial state.
 func (req *Request) reset() {
 	req.body = nil
 	req.jsonBody = nil
 	req.request = nil
 }
 
+// Cookie returns the cookie by the specific name.
 func (req *Request) Cookie(key string) (*http.Cookie, error) {
 	return req.request.Cookie(key)
 }

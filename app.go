@@ -16,6 +16,7 @@ type App struct {
 	port *int
 }
 
+// Run starts the app and listens on the given port.
 func (app *App) Run() {
 	addr := resolveListenAddr(app.port)
 
@@ -27,6 +28,7 @@ func (app *App) Run() {
 	}
 }
 
+// ServeHTTP implements the http.Handler interface.
 func (app *App) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	ctx := app.pool.Get().(*Context)
 	ctx.reset(req)
@@ -41,6 +43,7 @@ func (app *App) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	ctx.finalize()
 }
 
+// Use registers one or more middlewares or request handlers to the app.
 func (app *App) Use(handlers ...HandlerFunc) {
 	app.handlers = append(app.handlers, handlers...)
 }

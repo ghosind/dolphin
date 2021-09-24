@@ -25,7 +25,7 @@ var responsePool *sync.Pool = &sync.Pool{
 	},
 }
 
-// reset resets response to initial state.
+// reset resets response object to initial state.
 func (resp *Response) reset() {
 	resp.body = &bytes.Buffer{}
 	resp.cookies = make([]*http.Cookie, 0)
@@ -35,6 +35,7 @@ func (resp *Response) reset() {
 
 // write writes response to the specific HTTP response writer.
 func (resp *Response) write(rw http.ResponseWriter) {
+	// Add cookies to response.
 	if len(resp.cookies) > 0 {
 		for _, cookie := range resp.cookies {
 			if cookie == nil {
@@ -44,16 +45,20 @@ func (resp *Response) write(rw http.ResponseWriter) {
 		}
 	}
 
+	// Write response header.
 	for key, val := range resp.header {
 		rw.Header()[key] = val
 	}
 
+	// Set response status code to OK if not set or it's invalid.
 	if resp.statusCode <= 0 || resp.statusCode > 999 {
 		resp.statusCode = http.StatusOK
 	}
 
+	// Set response status code
 	rw.WriteHeader(resp.statusCode)
 
+	// Write response body.
 	io.Copy(rw, resp.body)
 }
 
@@ -79,12 +84,12 @@ func (resp *Response) AddHeader(key, val string) {
 	resp.header.Add(key, val)
 }
 
-// SetHeader sets value to the specific response HTTP header field.
+// SetHeader sets the specific response HTTP header field.
 func (resp *Response) SetHeader(key, val string) {
 	resp.header.Set(key, val)
 }
 
-// SetStatusCode sets response status code.
+// SetStatusCode sets the status code of the response.
 func (resp *Response) SetStatusCode(code int) error {
 	if code <= 0 || code > 999 {
 		return errors.New("invalid status code")
@@ -95,7 +100,7 @@ func (resp *Response) SetStatusCode(code int) error {
 	return nil
 }
 
-// StatusCode gets response status code.
+// StatusCode gets the response status code.
 func (resp *Response) StatusCode() int {
 	return resp.statusCode
 }

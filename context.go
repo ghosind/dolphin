@@ -7,21 +7,25 @@ import (
 )
 
 type Context struct {
+	// Request is the wrapped HTTP request.
 	Request *Request
-
+	// Response is the wrapped HTTP response.
 	Response *Response
-
+	// app is the framework application instance.
 	app *App
-
+	// handlers is the handler chain.
 	handlers HandlerChain
-
+	// index is the current handler index.
 	index int
-
+	// isAbort is the flag to indicate if the current handler chain should be
+	// aborted.
 	isAbort bool
-
+	// state is the context state, it can be used to store any data and pass to
+	// the next handlers.
 	state map[string]interface{}
 }
 
+// reset the context instance to initial state.
 func (ctx *Context) reset(req *http.Request) {
 	ctx.Request = requestPool.Get().(*Request)
 	ctx.Request.reset()
@@ -36,6 +40,7 @@ func (ctx *Context) reset(req *http.Request) {
 	ctx.state = map[string]interface{}{}
 }
 
+// finalize releases the context, request, and response resources.
 func (ctx *Context) finalize() {
 	requestPool.Put(ctx.Request)
 	responsePool.Put(ctx.Response)
@@ -68,6 +73,12 @@ func (ctx *Context) send(data []byte, contentType string, statusCode ...int) err
 	return nil
 }
 
+// Abort stops the current handler chain.
+func (ctx *Context) Abort() {
+	ctx.isAbort = true
+}
+
+// Next calls the next handler in the handler chain.
 func (ctx *Context) Next() {
 	ctx.index++
 
@@ -77,6 +88,7 @@ func (ctx *Context) Next() {
 	}
 }
 
+// Use registers one or more middlewares or request handlers to the context.
 func (ctx *Context) Use(handlers ...HandlerFunc) {
 	ctx.handlers = append(ctx.handlers, handlers...)
 }
