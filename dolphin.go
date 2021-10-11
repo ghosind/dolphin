@@ -2,6 +2,7 @@ package dolphin
 
 import (
 	"log"
+	"sync"
 )
 
 type HandlerFunc func(*Context)
@@ -30,6 +31,11 @@ func New(config *Config) *App {
 		logger:   config.Logger,
 		port:     config.Port,
 		handlers: HandlerChain{},
+		pool: sync.Pool{
+			New: func() interface{} {
+				return allocateContext()
+			},
+		},
 	}
 }
 

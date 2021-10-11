@@ -25,6 +25,11 @@ type Context struct {
 	state map[string]interface{}
 }
 
+// allocateContext returns a new context instance.
+func allocateContext() *Context {
+	return &Context{}
+}
+
 // reset the context instance to initial state.
 func (ctx *Context) reset(req *http.Request) {
 	ctx.Request = requestPool.Get().(*Request)
