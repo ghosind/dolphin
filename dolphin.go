@@ -5,10 +5,13 @@ import (
 	"sync"
 )
 
+// HandlerFunc is the function that register as a handler to the app.
 type HandlerFunc func(*Context)
 
+// HandlerChain is a chain of handlers.
 type HandlerChain []HandlerFunc
 
+// O is an alias for map that contains string key and interface{} value.
 type O map[string]interface{}
 
 type Config struct {
@@ -19,9 +22,11 @@ type Config struct {
 	Port *int
 }
 
+// debugMode indicates the enable/disable status of debug mode.
 var debugMode bool = false
 
 func init() {
+	// Load debug mode setting from environment variable.
 	setDebugMode()
 }
 
