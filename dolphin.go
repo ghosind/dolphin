@@ -2,6 +2,7 @@ package dolphin
 
 import (
 	"log"
+	"net/http"
 	"sync"
 )
 
@@ -14,6 +15,7 @@ type HandlerChain []HandlerFunc
 // O is an alias for map that contains string key and interface{} value.
 type O map[string]interface{}
 
+// Config is the configuration for the dolphin web application.
 type Config struct {
 	// Logger is the logger used by the app, dolphin will use log.Printf if this
 	// have not set.
@@ -41,6 +43,7 @@ func New(config *Config) *App {
 				return allocateContext()
 			},
 		},
+		server: &http.Server{},
 	}
 }
 

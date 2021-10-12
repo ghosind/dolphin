@@ -6,6 +6,7 @@ import (
 	"net/http"
 )
 
+// Context is the context instance for the request.
 type Context struct {
 	// Request is the wrapped HTTP request.
 	Request *Request
