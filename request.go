@@ -72,11 +72,11 @@ func (req *Request) Query(key string) string {
 // MultiValuesQuery returns the string array type values from the request query string by the
 // specific key.
 func (req *Request) MultiValuesQuery(key string) []string {
-	if req.request.PostForm == nil {
+	if req.request.Form == nil {
 		req.request.ParseForm()
 	}
 
-	return req.request.PostForm[key]
+	return req.request.Form[key]
 }
 
 // Post returns the body of the request.
