@@ -41,7 +41,7 @@ func (resp *Response) write(rw http.ResponseWriter) {
 			if cookie == nil {
 				continue
 			}
-			resp.AddHeader(HTTPHeaderSetCookie, cookie.String())
+			resp.AddHeader(HeaderSetCookie, cookie.String())
 		}
 	}
 
@@ -76,7 +76,7 @@ func (resp *Response) AddCookies(cookies ...*http.Cookie) {
 // SetContentType sets response HTTP header "Content-Type" field to the
 // specific MIME type value.
 func (resp *Response) SetContentType(contentType string) {
-	resp.header.Set(HTTPHeaderContentType, contentType)
+	resp.header.Set(HeaderContentType, contentType)
 }
 
 // AddHeader adds value to the specific response HTTP header field.

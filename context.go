@@ -233,7 +233,7 @@ func (ctx *Context) String(data string, statusCode ...int) error {
 // default status code if it isn't set.
 func (ctx *Context) Redirect(url string, statusCode ...int) {
 	if url == "back" {
-		url = ctx.Request.Header(HTTPHeaderReferrer)
+		url = ctx.Request.Header(HeaderReferrer)
 	}
 
 	code := http.StatusFound
@@ -243,7 +243,7 @@ func (ctx *Context) Redirect(url string, statusCode ...int) {
 	}
 
 	ctx.Response.SetStatusCode(code)
-	ctx.Response.SetHeader(HTTPHeaderLocation, url)
+	ctx.Response.SetHeader(HeaderLocation, url)
 }
 
 // AddCookies adds one or more given cookies to the response.
