@@ -8,7 +8,7 @@ import (
 )
 
 // defaultPort is the default listening port of the dolphin framework.
-var defaultPort string = ":8080"
+var defaultPort = ":8080"
 
 // setDebugMode sets global variable `debugMode` and enables debug mode if
 // environment variable `DOLPHIN_DEBUG` is set.

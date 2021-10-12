@@ -25,7 +25,7 @@ type Config struct {
 }
 
 // debugMode indicates the enable/disable status of debug mode.
-var debugMode bool = false
+var debugMode = false
 
 func init() {
 	// Load debug mode setting from environment variable.

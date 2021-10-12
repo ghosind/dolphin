@@ -19,7 +19,7 @@ type Response struct {
 	statusCode int
 }
 
-var responsePool *sync.Pool = &sync.Pool{
+var responsePool = &sync.Pool{
 	New: func() interface{} {
 		return &Response{}
 	},

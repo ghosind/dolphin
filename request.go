@@ -20,7 +20,7 @@ type Request struct {
 	request *http.Request
 }
 
-var requestPool *sync.Pool = &sync.Pool{
+var requestPool = &sync.Pool{
 	New: func() interface{} {
 		return &Request{}
 	},
@@ -54,7 +54,7 @@ func (req *Request) MultiValuesHeader(key string) []string {
 	return req.request.Header.Values(key)
 }
 
-// Methods returns the request method.
+// Method returns the request method.
 func (req *Request) Method() string {
 	return req.request.Method
 }
@@ -119,7 +119,7 @@ func (req *Request) PostJSON() (interface{}, error) {
 	return payload, nil
 }
 
-// PostFrom returns the form data from the request by the specific key.
+// PostForm returns the form data from the request by the specific key.
 func (req *Request) PostForm(key string) string {
 	return req.request.FormValue(key)
 }

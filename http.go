@@ -1,5 +1,6 @@
 package dolphin
 
+// HTTP Request methods.
 const (
 	// MethodGet is the HTTP GET method.
 	MethodGet = "GET"
@@ -17,6 +18,7 @@ const (
 	MethodPut = "PUT"
 )
 
+// HTTP header names.
 const (
 	// HeaderContentType is the "Content-Type" header.
 	HeaderContentType = "Content-Type"
@@ -28,6 +30,7 @@ const (
 	HeaderSetCookie = "Set-Cookie"
 )
 
+// MIME types for HTTP content type.
 const (
 	// MIMETypeJSON indicates the "application/json" MIME type.
 	MIMETypeJSON = "application/json"
