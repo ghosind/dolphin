@@ -1,23 +1,5 @@
 package dolphin
 
-// HTTP Request methods.
-const (
-	// MethodGet is the HTTP GET method.
-	MethodGet = "GET"
-	// MethodDelete is the HTTP DELETE method.
-	MethodDelete = "DELETE"
-	// MethodHead is the HTTP HEAD method.
-	MethodHead = "HEAD"
-	// MethodOptions is the HTTP OPTIONS method.
-	MethodOptions = "OPTIONS"
-	// MethodPatch is the HTTP PATCH method.
-	MethodPatch = "PATCH"
-	// MethodPost is the HTTP POST method.
-	MethodPost = "POST"
-	// MethodPut is the HTTP PUT method.
-	MethodPut = "PUT"
-)
-
 // HTTP header names.
 const (
 	// HeaderContentType is the "Content-Type" header.
