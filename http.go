@@ -4,6 +4,8 @@ package dolphin
 const (
 	// HeaderContentType is the "Content-Type" header.
 	HeaderContentType = "Content-Type"
+	// Host is the "Host" header.
+	HeaderHost = "Host"
 	// HeaderLocation is the "Location" header.
 	HeaderLocation = "Location"
 	// HeaderReferrer is the "Referer" header.

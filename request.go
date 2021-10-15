@@ -54,6 +54,16 @@ func (req *Request) MultiValuesHeader(key string) []string {
 	return req.request.Header.Values(key)
 }
 
+// Host reads and returns the request "Host" header.
+func (req *Request) Host() string {
+	return req.Header(HeaderHost)
+}
+
+// Ip returns the request client ip.
+func (req *Request) Ip() string {
+	return req.request.RemoteAddr
+}
+
 // Method returns the request method.
 func (req *Request) Method() string {
 	return req.request.Method
