@@ -59,8 +59,8 @@ func (req *Request) Host() string {
 	return req.Header(HeaderHost)
 }
 
-// Ip returns the request client ip.
-func (req *Request) Ip() string {
+// IP returns the request client ip.
+func (req *Request) IP() string {
 	return req.request.RemoteAddr
 }
 

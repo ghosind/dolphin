@@ -139,9 +139,9 @@ func (ctx *Context) MultiValuesHeader(key string) []string {
 	return ctx.Request.MultiValuesHeader(key)
 }
 
-// Ip returns the request client IP address.
-func (ctx *Context) Ip() string {
-	return ctx.Request.Ip()
+// IP returns the request client IP address.
+func (ctx *Context) IP() string {
+	return ctx.Request.IP()
 }
 
 // Method returns the request method.
