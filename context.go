@@ -160,8 +160,8 @@ func (ctx *Context) Post() string {
 }
 
 // PostJSON returns the request post data as JSON object.
-func (ctx *Context) PostJSON() (interface{}, error) {
-	return ctx.Request.PostJSON()
+func (ctx *Context) PostJSON(payload interface{}) error {
+	return ctx.Request.PostJSON(payload)
 }
 
 // PostForm returns the request form data.

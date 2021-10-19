@@ -13,8 +13,6 @@ import (
 type Request struct {
 	body *string
 
-	jsonBody interface{}
-
 	locker sync.Mutex
 
 	request *http.Request
@@ -29,7 +27,6 @@ var requestPool = &sync.Pool{
 // reset resets request object to the initial state.
 func (req *Request) reset() {
 	req.body = nil
-	req.jsonBody = nil
 	req.request = nil
 }
 
@@ -108,25 +105,15 @@ func (req *Request) Post() string {
 }
 
 // PostJSON returns the request body and parses it to the interface{} object.
-func (req *Request) PostJSON() (interface{}, error) {
-	if req.jsonBody != nil {
-		return req.jsonBody, nil
-	}
-
+func (req *Request) PostJSON(payload interface{}) error {
 	body := req.Post()
 
-	req.locker.Lock()
-	defer req.locker.Unlock()
-
-	var payload interface{}
 	err := json.Unmarshal([]byte(body), payload)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	req.jsonBody = payload
-
-	return payload, nil
+	return nil
 }
 
 // PostForm returns the form data from the request by the specific key.
