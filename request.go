@@ -1,7 +1,6 @@
 package dolphin
 
 import (
-	"encoding/json"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -102,18 +101,6 @@ func (req *Request) Post() string {
 	req.body = &body
 
 	return body
-}
-
-// PostJSON returns the request body and parses it to the interface{} object.
-func (req *Request) PostJSON(payload interface{}) error {
-	body := req.Post()
-
-	err := json.Unmarshal([]byte(body), payload)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
 
 // PostForm returns the form data from the request by the specific key.

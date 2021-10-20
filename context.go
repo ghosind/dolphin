@@ -161,7 +161,14 @@ func (ctx *Context) Post() string {
 
 // PostJSON returns the request post data as JSON object.
 func (ctx *Context) PostJSON(payload interface{}) error {
-	return ctx.Request.PostJSON(payload)
+	body := ctx.Request.Post()
+
+	err := json.Unmarshal([]byte(body), payload)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // PostForm returns the request form data.
