@@ -58,9 +58,8 @@ func TestGetRequestPostJSON(t *testing.T) {
 		Message *string `json:"message"`
 	}
 
-	port := 8081
 	app := New(&Config{
-		Port: &port,
+		Port: 8081,
 	})
 
 	app.Use(func(c *Context) {
@@ -107,10 +106,6 @@ func TestGetRequestPostJSON(t *testing.T) {
 	if resp.StatusCode != http.StatusOK {
 		t.Errorf("GET request expect status code %d, actual got %d", http.StatusOK, resp.StatusCode)
 		return
-	}
-
-	if resp.Header.Get("Content-Type") != "application/json" {
-		t.Errorf("Expect Content-Type %s, actual got %s", "application/json", resp.Header.Get("Content-Type"))
 	}
 
 	var data PostJsonTestPayload

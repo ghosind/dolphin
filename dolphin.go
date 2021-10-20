@@ -21,7 +21,7 @@ type Config struct {
 	// have not set.
 	Logger *log.Logger
 	// Port is the port to listen on.
-	Port *int
+	Port int
 }
 
 // debugMode indicates the enable/disable status of debug mode.
@@ -34,6 +34,10 @@ func init() {
 
 // New creates a new App instance.
 func New(config *Config) *App {
+	if config == nil {
+		config = &Config{}
+	}
+
 	return &App{
 		logger:   config.Logger,
 		port:     config.Port,
@@ -52,7 +56,7 @@ func Default() *App {
 	defaultPort := 8080
 
 	app := New(&Config{
-		Port: &defaultPort,
+		Port: defaultPort,
 	})
 
 	return app

@@ -15,14 +15,14 @@ type App struct {
 
 	pool sync.Pool
 
-	port *int
+	port int
 
 	server *http.Server
 }
 
 // Run starts the app and listens on the given port.
 func (app *App) Run() {
-	addr := resolveListenAddr(app.port)
+	addr := resolveListenAddr(&app.port)
 	app.log("Server running at %s.\n", addr)
 
 	app.server.Addr = addr
