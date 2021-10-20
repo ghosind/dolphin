@@ -29,7 +29,7 @@ func (app *App) Run() {
 	app.server.Handler = app
 
 	err := app.server.ListenAndServe()
-	if err != nil {
+	if err != nil && err != http.ErrServerClosed {
 		app.log("Failed to run server: %v\n", err)
 	}
 }
@@ -63,11 +63,12 @@ func (app *App) Use(handlers ...HandlerFunc) {
 	app.handlers = append(app.handlers, handlers...)
 }
 
+// log logs a message to the app's logger or log.Printf.
 func (app *App) log(fmt string, args ...interface{}) {
-	handler := log.Printf
+	logger := log.Printf
 	if app.logger != nil {
-		handler = app.logger.Printf
+		logger = app.logger.Printf
 	}
 
-	handler(fmt, args...)
+	logger(fmt, args...)
 }
