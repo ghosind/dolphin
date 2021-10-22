@@ -17,6 +17,10 @@ type O map[string]interface{}
 
 // Config is the configuration for the dolphin web application.
 type Config struct {
+	// CertFile is the TLS certificate file.
+	CertFile *string
+	// KeyFile is the TLS private key file.
+	KeyFile *string
 	// Logger is the logger used by the app, dolphin will use log.Printf if this
 	// have not set.
 	Logger *log.Logger
@@ -39,6 +43,8 @@ func New(config *Config) *App {
 	}
 
 	return &App{
+		certFile: config.CertFile,
+		keyFile:  config.KeyFile,
 		logger:   config.Logger,
 		port:     config.Port,
 		handlers: HandlerChain{},

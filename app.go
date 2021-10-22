@@ -2,6 +2,7 @@ package dolphin
 
 import (
 	"context"
+	"errors"
 	"log"
 	"net/http"
 	"sync"
@@ -9,7 +10,11 @@ import (
 
 // App is the dolphin web server engine.
 type App struct {
+	certFile *string
+
 	handlers HandlerChain
+
+	keyFile *string
 
 	logger *log.Logger
 
@@ -32,6 +37,28 @@ func (app *App) Run() {
 	if err != nil && err != http.ErrServerClosed {
 		app.log("Failed to run server: %v\n", err)
 	}
+}
+
+// RunTLS starts the app to provide HTTPS service and listens on the given port.
+func (app *App) RunTLS() error {
+	if app.certFile == nil || app.keyFile == nil {
+		return errors.New("certificate file are required")
+	}
+
+	addr := resolveListenAddr(&app.port)
+	app.log("Server running at %s.\n", addr)
+
+	app.server.Addr = addr
+	app.server.Handler = app
+
+	err := app.server.ListenAndServeTLS(*app.certFile, *app.keyFile)
+
+	if err != nil && err != http.ErrServerClosed {
+		app.log("Failed to run server: %v\n", err)
+		return err
+	}
+
+	return nil
 }
 
 // Shutdown tries to close active connections and stops the server.
