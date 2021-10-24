@@ -27,11 +27,7 @@ type App struct {
 
 // Run starts the app and listens on the given port.
 func (app *App) Run() {
-	addr := resolveListenAddr(&app.port)
-	app.log("Server running at %s.\n", addr)
-
-	app.server.Addr = addr
-	app.server.Handler = app
+	app.initServer()
 
 	err := app.server.ListenAndServe()
 	if err != nil && err != http.ErrServerClosed {
@@ -41,15 +37,14 @@ func (app *App) Run() {
 
 // RunTLS starts the app to provide HTTPS service and listens on the given port.
 func (app *App) RunTLS() error {
-	if app.certFile == nil || app.keyFile == nil {
-		return errors.New("certificate file are required")
+	if app.certFile == nil || len(*app.certFile) <= 0 {
+		return errors.New("certificate file is required")
+	}
+	if app.keyFile == nil || len(*app.keyFile) <= 0 {
+		return errors.New("certificate private key file is required")
 	}
 
-	addr := resolveListenAddr(&app.port)
-	app.log("Server running at %s.\n", addr)
-
-	app.server.Addr = addr
-	app.server.Handler = app
+	app.initServer()
 
 	err := app.server.ListenAndServeTLS(*app.certFile, *app.keyFile)
 
@@ -88,6 +83,15 @@ func (app *App) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 // Use registers one or more middlewares or request handlers to the app.
 func (app *App) Use(handlers ...HandlerFunc) {
 	app.handlers = append(app.handlers, handlers...)
+}
+
+// initServer gets listenning port and initialize HTTP server.
+func (app *App) initServer() {
+	addr := resolveListenAddr(&app.port)
+	app.log("Server running at %s.\n", addr)
+
+	app.server.Addr = addr
+	app.server.Handler = app
 }
 
 // log logs a message to the app's logger or log.Printf.
