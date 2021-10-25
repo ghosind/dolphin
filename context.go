@@ -259,6 +259,11 @@ func (ctx *Context) Redirect(url string, statusCode ...int) {
 	ctx.Response.SetHeader(HeaderLocation, url)
 }
 
+// Write writes the given data to the response body.
+func (ctx *Context) Write(data []byte) (int, error) {
+	return ctx.Response.SetBody(data)
+}
+
 // AddCookies adds one or more given cookies to the response.
 func (ctx *Context) AddCookies(cookies ...*http.Cookie) {
 	ctx.Response.AddCookies(cookies...)
@@ -279,7 +284,8 @@ func (ctx *Context) SetStatusCode(code int) error {
 	return ctx.Response.SetStatusCode(code)
 }
 
-// SetContentType sets the content type of the response.
+// SetContentType sets the response HTTP header "Content-Type" field to the
+// specific MIME type value.
 func (ctx *Context) SetContentType(contentType string) {
-	ctx.Response.SetContentType(contentType)
+	ctx.Response.SetHeader(HeaderContentType, contentType)
 }

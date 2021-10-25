@@ -73,12 +73,6 @@ func (resp *Response) AddCookies(cookies ...*http.Cookie) {
 	resp.cookies = append(resp.cookies, cookies...)
 }
 
-// SetContentType sets response HTTP header "Content-Type" field to the
-// specific MIME type value.
-func (resp *Response) SetContentType(contentType string) {
-	resp.header.Set(HeaderContentType, contentType)
-}
-
 // AddHeader adds value to the specific response HTTP header field.
 func (resp *Response) AddHeader(key, val string) {
 	resp.header.Add(key, val)
