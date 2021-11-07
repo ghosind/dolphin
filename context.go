@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"mime/multipart"
 	"net/http"
+	"sync"
 )
 
 // Context is the context instance for the request.
@@ -21,6 +22,8 @@ type Context struct {
 	// isAbort is the flag to indicate if the current handler chain should be
 	// aborted.
 	isAbort bool
+	// sm is the mutex for the context state.
+	sm sync.Mutex
 	// state is the context state, it can be used to store any data and pass to
 	// the next handlers.
 	state map[string]interface{}
@@ -112,14 +115,33 @@ func (ctx *Context) Log(fmt string, args ...interface{}) {
 
 // Get retrieves the value of the given key from the context state.
 func (ctx *Context) Get(key string) (interface{}, bool) {
+	ctx.sm.Lock()
+	defer ctx.sm.Unlock()
+
 	val, ok := ctx.state[key]
 
 	return val, ok
 }
 
+// Has returns true if the given key exists in the context state.
+func (ctx *Context) Has(key string) bool {
+	ctx.sm.Lock()
+	defer ctx.sm.Unlock()
+
+	_, ok := ctx.state[key]
+
+	return ok
+}
+
 // Set sets the value of the given key to the context state.
-func (ctx *Context) Set(key string, val interface{}) {
+func (ctx *Context) Set(key string, val interface{}) interface{} {
+	ctx.sm.Lock()
+	defer ctx.sm.Unlock()
+
+	oldVal := ctx.state[key]
 	ctx.state[key] = val
+
+	return oldVal
 }
 
 // Cookie returns the named cookie provided in the request.
