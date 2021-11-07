@@ -32,24 +32,27 @@ func allocateContext() *Context {
 }
 
 // reset the context instance to initial state.
-func (ctx *Context) reset(req *http.Request) {
-	ctx.Request = requestPool.Get().(*Request)
+func (ctx *Context) reset(app *App, req *http.Request) {
+	ctx.Request = app.reqPool.Get().(*Request)
 	ctx.Request.reset()
 	ctx.Request.request = req
 
-	ctx.Response = responsePool.Get().(*Response)
+	ctx.Response = app.resPool.Get().(*Response)
 	ctx.Response.reset()
 
+	ctx.app = app
 	ctx.handlers = HandlerChain{}
 	ctx.index = -1
 	ctx.isAbort = false
 	ctx.state = map[string]interface{}{}
+
+	ctx.Use(app.handlers...)
 }
 
 // finalize releases the context, request, and response resources.
 func (ctx *Context) finalize() {
-	requestPool.Put(ctx.Request)
-	responsePool.Put(ctx.Response)
+	ctx.app.reqPool.Put(ctx.Request)
+	ctx.app.resPool.Put(ctx.Response)
 
 	ctx.app.pool.Put(ctx)
 }
@@ -72,7 +75,7 @@ func (ctx *Context) send(data []byte, contentType string, statusCode ...int) err
 		ctx.Response.SetStatusCode(http.StatusOK)
 	}
 
-	ctx.Response.SetContentType(contentType)
+	ctx.SetContentType(contentType)
 	_, err := ctx.Response.SetBody(data)
 	if err != nil {
 		debugPrintf("Failed to set response body: %v", err)

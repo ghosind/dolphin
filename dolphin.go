@@ -48,9 +48,19 @@ func New(config *Config) *App {
 		logger:   config.Logger,
 		port:     config.Port,
 		handlers: HandlerChain{},
-		pool: sync.Pool{
+		pool: &sync.Pool{
 			New: func() interface{} {
 				return allocateContext()
+			},
+		},
+		reqPool: &sync.Pool{
+			New: func() interface{} {
+				return &Request{}
+			},
+		},
+		resPool: &sync.Pool{
+			New: func() interface{} {
+				return &Response{}
 			},
 		},
 		server: &http.Server{},

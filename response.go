@@ -5,7 +5,6 @@ import (
 	"errors"
 	"io"
 	"net/http"
-	"sync"
 )
 
 // Response is the HTTP response wrapper.
@@ -17,12 +16,6 @@ type Response struct {
 	header http.Header
 
 	statusCode int
-}
-
-var responsePool = &sync.Pool{
-	New: func() interface{} {
-		return &Response{}
-	},
 }
 
 // reset resets response object to initial state.

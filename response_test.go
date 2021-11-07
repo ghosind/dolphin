@@ -6,7 +6,7 @@ import (
 )
 
 func TestReset(t *testing.T) {
-	resp := responsePool.Get().(*Response)
+	resp := &Response{}
 	resp.reset()
 
 	if len(resp.body.Bytes()) != 0 {
@@ -30,7 +30,7 @@ func TestReset(t *testing.T) {
 }
 
 func TestSetStatus(t *testing.T) {
-	resp := responsePool.Get().(*Response)
+	resp := &Response{}
 	resp.reset()
 
 	err := resp.SetStatusCode(-1)

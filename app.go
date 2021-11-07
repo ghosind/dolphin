@@ -18,9 +18,13 @@ type App struct {
 
 	logger *log.Logger
 
-	pool sync.Pool
+	pool *sync.Pool
 
 	port int
+
+	reqPool *sync.Pool
+
+	resPool *sync.Pool
 
 	server *http.Server
 }
@@ -68,11 +72,7 @@ func (app *App) Shutdown(ctx ...context.Context) error {
 // ServeHTTP implements the http.Handler interface.
 func (app *App) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	ctx := app.pool.Get().(*Context)
-	ctx.reset(req)
-
-	ctx.app = app
-
-	ctx.Use(app.handlers...)
+	ctx.reset(app, req)
 
 	ctx.Next()
 	ctx.writeResponse(rw)

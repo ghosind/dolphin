@@ -17,12 +17,6 @@ type Request struct {
 	request *http.Request
 }
 
-var requestPool = &sync.Pool{
-	New: func() interface{} {
-		return &Request{}
-	},
-}
-
 // reset resets request object to the initial state.
 func (req *Request) reset() {
 	req.body = nil
