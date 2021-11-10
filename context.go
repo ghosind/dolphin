@@ -184,7 +184,7 @@ func (ctx *Context) Post() string {
 	return ctx.Request.Post()
 }
 
-// PostJSON returns the request post data as JSON object.
+// PostJSON gets request body and parses to the given struct.
 func (ctx *Context) PostJSON(payload interface{}) error {
 	body := ctx.Request.Post()
 

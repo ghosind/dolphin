@@ -74,7 +74,8 @@ func (req *Request) Query(key string) string {
 // specific key.
 func (req *Request) MultiValuesQuery(key string) []string {
 	if req.request.Form == nil {
-		req.request.ParseForm()
+		err := req.request.ParseForm()
+		debugPrintf("Failed to parse request form: %v", err)
 	}
 
 	return req.request.Form[key]
