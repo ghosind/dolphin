@@ -5,20 +5,18 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 )
 
 // defaultPort is the default listening port of the dolphin framework.
 var defaultPort = ":8080"
 
 // setDebugMode sets global variable `debugMode` and enables debug mode if
-// environment variable `DOLPHIN_DEBUG` is set.
+// environment variable `DOLPHIN_DEBUG` is set to "true".
 func setDebugMode() {
-	debug := os.Getenv("DOLPHIN_DEBUG")
-	if debug != "" {
-		debugMode = true
+	debugMode = strings.ToLower(os.Getenv("DOLPHIN_DEBUG")) == "true"
+	if debugMode {
 		debugPrintf("Debug mode enabled.")
-	} else {
-		debugMode = false
 	}
 }
 
