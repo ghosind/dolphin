@@ -4,6 +4,7 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/de7fbdc27cd3411b9a2d57d34eae44d2)](https://www.codacy.com/gh/ghosind/dolphin/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ghosind/dolphin&amp;utm_campaign=Badge_Grade)
 ![Version Badge](https://img.shields.io/github/v/release/ghosind/dolphin)
 ![License Badge](https://img.shields.io/github/license/ghosind/dolphin)
+[![Go Reference](https://pkg.go.dev/badge/github.com/ghosind/dolphin.svg)](https://pkg.go.dev/github.com/ghosind/dolphin)
 
 Dolphin is a simple web framework for Golang.
 
