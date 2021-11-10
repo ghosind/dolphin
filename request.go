@@ -12,7 +12,7 @@ import (
 type Request struct {
 	body *string
 
-	locker sync.Mutex
+	bodyOnce *sync.Once
 
 	request *http.Request
 }
@@ -20,6 +20,7 @@ type Request struct {
 // reset resets request object to the initial state.
 func (req *Request) reset() {
 	req.body = nil
+	req.bodyOnce = &sync.Once{}
 	req.request = nil
 }
 
@@ -81,20 +82,17 @@ func (req *Request) MultiValuesQuery(key string) []string {
 
 // Post returns the body of the request.
 func (req *Request) Post() string {
-	if req.body != nil {
-		return *req.body
+	if req.body == nil {
+		req.bodyOnce.Do(func() {
+			buf := new(strings.Builder)
+			io.Copy(buf, req.request.Body)
+			body := buf.String()
+
+			req.body = &body
+		})
 	}
 
-	req.locker.Lock()
-	defer req.locker.Unlock()
-
-	buf := new(strings.Builder)
-	io.Copy(buf, req.request.Body)
-	body := buf.String()
-
-	req.body = &body
-
-	return body
+	return *req.body
 }
 
 // PostForm returns the form data from the request by the specific key.
