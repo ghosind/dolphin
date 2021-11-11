@@ -2,7 +2,6 @@ package dolphin
 
 import (
 	"context"
-	"errors"
 	"log"
 	"net/http"
 	"sync"
@@ -42,10 +41,10 @@ func (app *App) Run() {
 // RunTLS starts the app to provide HTTPS service and listens on the given port.
 func (app *App) RunTLS() error {
 	if app.certFile == nil || len(*app.certFile) <= 0 {
-		return errors.New("certificate file is required")
+		return ErrNoTLSCert
 	}
 	if app.keyFile == nil || len(*app.keyFile) <= 0 {
-		return errors.New("certificate private key file is required")
+		return ErrNoTLSKey
 	}
 
 	app.initServer()

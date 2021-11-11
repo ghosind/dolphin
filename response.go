@@ -2,7 +2,6 @@ package dolphin
 
 import (
 	"bytes"
-	"errors"
 	"io"
 	"net/http"
 )
@@ -79,7 +78,7 @@ func (resp *Response) SetHeader(key, val string) {
 // SetStatusCode sets the status code of the response.
 func (resp *Response) SetStatusCode(code int) error {
 	if code <= 0 || code > 999 {
-		return errors.New("invalid status code")
+		return ErrInvalidStatusCode
 	}
 
 	resp.statusCode = code
