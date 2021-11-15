@@ -2,7 +2,7 @@ package dolphin
 
 import (
 	"fmt"
-	"log"
+	"io"
 	"os"
 	"strconv"
 	"strings"
@@ -10,6 +10,9 @@ import (
 
 // defaultPort is the default listening port of the dolphin framework.
 var defaultPort = ":8080"
+
+// DebugWriter is the writter used to print debug messages, default `os.Stdout`.
+var DebugWriter io.Writer = os.Stdout
 
 // setDebugMode sets global variable `debugMode` and enables debug mode if
 // environment variable `DOLPHIN_DEBUG` is set to "true".
@@ -28,7 +31,7 @@ func debugPrintf(format string, args ...interface{}) {
 
 	format = "[DOLPHIN] " + format
 
-	log.Printf(format, args...)
+	fmt.Fprintf(DebugWriter, format, args...)
 }
 
 // resolveListenAddr resolves the listening address from parameter or

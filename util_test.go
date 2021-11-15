@@ -1,6 +1,8 @@
 package dolphin
 
 import (
+	"bytes"
+	"os"
 	"strings"
 	"testing"
 )
@@ -26,6 +28,22 @@ func TestDebugMode(t *testing.T) {
 	if debugMode {
 		t.Errorf("debug mode expect false, actual true.")
 	}
+}
+
+func TestDebugWriter(t *testing.T) {
+	buffer := bytes.Buffer{}
+	DebugWriter = &buffer
+
+	t.Setenv("DOLPHIN_DEBUG", "true")
+	setDebugMode()
+
+	if strings.Compare(buffer.String(), "[DOLPHIN] Debug mode enabled.") != 0 {
+		t.Errorf("debug writer expect \"[DOLPHIN] Debug mode enabled.\", actual %s.", buffer.String())
+	}
+
+	DebugWriter = os.Stdout
+	t.Setenv("DOLPHIN_DEBUG", "")
+	setDebugMode()
 }
 
 func TestResolveListenAddr(t *testing.T) {
