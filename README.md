@@ -61,6 +61,69 @@ Dolphin is a simple web framework for Golang.
 
 3. Visit `http://locahost:8080?name=dolphin` by your browser or other tools to see the result.
 
+## Examples
+
+### Parameters in query string
+
+```go
+func handler(ctx *dolphin.Context) {
+  firstName := ctx.Query("firstName")
+  lastName := ctx.QueryDefault("lastName", "Doe")
+
+  ctx.JSON(ctx.O{
+    "message": fmt.Sprintf("Hello, %s ", firstName, lastName),
+  })
+}
+```
+
+### Parsed request body
+
+```go
+type Payload struct {
+  Name string `json:"name"`
+}
+
+func handler(ctx *dolphin.Context) {
+  var payload Payload
+
+  if err := ctx.PostJSON(&payload); err != nil {
+    // Return 400 Bad Request
+    ctx.Fail(ctx.O{
+      "message": "Invalid payload",
+    })
+    return
+  }
+
+  ctx.JSON(ctx.O{
+    "message": fmt.Sprintf("Hello, %s ", payload.Name),
+  })
+}
+```
+
+### Custom middleware
+
+```go
+func CustomMiddleware() {
+  // Do something
+
+  return func (ctx *dolphin.Context) {
+    // Do something before following handlers
+
+    ctx.Next()
+
+    // Do something after following handlers
+  }
+}
+
+func main() {
+  app := dolphin.Default()
+
+  app.Use(CustomMiddleware())
+
+  // ...
+}
+```
+
 ## License
 
 Distributed under the MIT License. See LICENSE file for more information.
