@@ -2,8 +2,10 @@ package dolphin
 
 import (
 	"encoding/json"
+	"io"
 	"mime/multipart"
 	"net/http"
+	"os"
 	"sync"
 )
 
@@ -111,6 +113,15 @@ func (ctx *Context) Use(handlers ...HandlerFunc) {
 // Log call the app logger with the given format and args.
 func (ctx *Context) Log(fmt string, args ...interface{}) {
 	ctx.app.log(fmt, args...)
+}
+
+// LoggerWriter returns the app logger's writer, or os.Stdout if the app logger is not set.
+func (ctx *Context) LoggerWriter() io.Writer {
+	if ctx.app.logger != nil {
+		return ctx.app.logger.Writer()
+	}
+
+	return os.Stdout
 }
 
 // Get retrieves the value of the given key from the context state.
