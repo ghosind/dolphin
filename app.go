@@ -86,13 +86,34 @@ func (app *App) Use(handlers ...HandlerFunc) {
 	app.handlers = append(app.handlers, handlers...)
 }
 
-// initServer gets listenning port and initialize HTTP server.
-func (app *App) initServer() {
-	addr := resolveListenAddr(&app.port)
-	app.log("Server running at %s.\n", addr)
+// CertFile returns the app TLS certificate file.
+func (app *App) CertFile() *string {
+	return app.certFile
+}
 
-	app.server.Addr = addr
-	app.server.Handler = app
+// SetCertFile sets the app TLS certificate file.
+func (app *App) SetCertFile(certFile *string) {
+	app.certFile = certFile
+}
+
+// KeyFile returns the app TLS key file.
+func (app *App) KeyFile() *string {
+	return app.keyFile
+}
+
+// SetKeyFile sets the app TLS key file.
+func (app *App) SetKeyFile(keyFile *string) {
+	app.keyFile = keyFile
+}
+
+// Logger returns the app logger, it will return nil if logger is not set.
+func (app *App) Logger() *log.Logger {
+	return app.logger
+}
+
+// SetLogger sets the app logger.
+func (app *App) SetLogger(logger *log.Logger) {
+	app.logger = logger
 }
 
 // LoggerWriter returns the app logger's writer, or os.Stderr if the app logger is not set.
@@ -102,6 +123,15 @@ func (app *App) LoggerWriter() io.Writer {
 	}
 
 	return os.Stderr
+}
+
+// initServer gets listenning port and initialize HTTP server.
+func (app *App) initServer() {
+	addr := resolveListenAddr(&app.port)
+	app.log("Server running at %s.\n", addr)
+
+	app.server.Addr = addr
+	app.server.Handler = app
 }
 
 // log logs a message to the app's logger or log.Printf.
