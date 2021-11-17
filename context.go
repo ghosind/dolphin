@@ -5,7 +5,6 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
-	"os"
 	"sync"
 )
 
@@ -117,11 +116,7 @@ func (ctx *Context) Log(fmt string, args ...interface{}) {
 
 // LoggerWriter returns the app logger's writer, or os.Stderr if the app logger is not set.
 func (ctx *Context) LoggerWriter() io.Writer {
-	if ctx.app.logger != nil {
-		return ctx.app.logger.Writer()
-	}
-
-	return os.Stderr
+	return ctx.app.LoggerWriter()
 }
 
 // Get retrieves the value of the given key from the context state.

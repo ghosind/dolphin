@@ -2,8 +2,10 @@ package dolphin
 
 import (
 	"context"
+	"io"
 	"log"
 	"net/http"
+	"os"
 	"sync"
 )
 
@@ -91,6 +93,15 @@ func (app *App) initServer() {
 
 	app.server.Addr = addr
 	app.server.Handler = app
+}
+
+// LoggerWriter returns the app logger's writer, or os.Stderr if the app logger is not set.
+func (app *App) LoggerWriter() io.Writer {
+	if app.logger != nil {
+		return app.logger.Writer()
+	}
+
+	return os.Stderr
 }
 
 // log logs a message to the app's logger or log.Printf.
