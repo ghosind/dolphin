@@ -23,8 +23,8 @@ type Context struct {
 	// isAbort is the flag to indicate if the current handler chain should be
 	// aborted.
 	isAbort bool
-	// sm is the mutex for the context state.
-	sm sync.Mutex
+	// sm is the mutex for protecting the context state.
+	sm sync.RWMutex
 	// state is the context state, it can be used to store any data and pass to
 	// the next handlers.
 	state map[string]interface{}
@@ -121,8 +121,8 @@ func (ctx *Context) LoggerWriter() io.Writer {
 
 // Get retrieves the value of the given key from the context state.
 func (ctx *Context) Get(key string) (interface{}, bool) {
-	ctx.sm.Lock()
-	defer ctx.sm.Unlock()
+	ctx.sm.RLock()
+	defer ctx.sm.RUnlock()
 
 	val, ok := ctx.state[key]
 
