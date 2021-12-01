@@ -22,7 +22,7 @@ type requestLogData struct {
 	MilLatency int64
 	// Method is the request method.
 	Method string
-	// Path is the request path.
+	// Path is the request path with the query string.
 	Path string
 	// StatusCode is the response status code.
 	StatusCode int
@@ -39,6 +39,10 @@ func Logger(config ...LoggerCongfig) dolphin.HandlerFunc {
 			IP:     ctx.IP(),
 			Method: ctx.Method(),
 			Path:   ctx.Path(),
+		}
+
+		if query := ctx.RawQuery(); query != "" {
+			data.Path += "?" + query
 		}
 
 		ctx.Next()
