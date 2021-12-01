@@ -239,6 +239,11 @@ func (ctx *Context) MultiValuesQueryDefault(key string, defaultValues []string) 
 	return val
 }
 
+// RawQuery returns raw query string (withoud ?).
+func (ctx *Context) RawQuery() string {
+	return ctx.Request.RawQuery()
+}
+
 // Success writes the given data to the response body as JSON, and set the status code to 200 (OK).
 func (ctx *Context) Success(data interface{}) error {
 	return ctx.JSON(data, http.StatusOK)

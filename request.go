@@ -81,6 +81,11 @@ func (req *Request) MultiValuesQuery(key string) []string {
 	return req.request.Form[key]
 }
 
+// RawQuery returns raw query string (withoud ?).
+func (req *Request) RawQuery() string {
+	return req.request.URL.RawQuery
+}
+
 // Post returns the body of the request.
 func (req *Request) Post() string {
 	if req.body == nil {
