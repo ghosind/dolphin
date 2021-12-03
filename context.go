@@ -150,6 +150,11 @@ func (ctx *Context) Set(key string, val interface{}) interface{} {
 	return oldVal
 }
 
+// Body returns the body of the request.
+func (ctx *Context) Body() string {
+	return ctx.Request.Body()
+}
+
 // Cookie returns the named cookie provided in the request.
 func (ctx *Context) Cookie(key string) (*http.Cookie, error) {
 	return ctx.Request.Cookie(key)
@@ -187,12 +192,12 @@ func (ctx *Context) Path() string {
 
 // Post returns the request post data.
 func (ctx *Context) Post() string {
-	return ctx.Request.Post()
+	return ctx.Request.Body()
 }
 
 // PostJSON gets request body and parses to the given struct.
 func (ctx *Context) PostJSON(payload interface{}) error {
-	body := ctx.Request.Post()
+	body := ctx.Request.Body()
 
 	err := json.Unmarshal([]byte(body), payload)
 	if err != nil {

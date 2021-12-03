@@ -24,6 +24,21 @@ func (req *Request) reset() {
 	req.request = nil
 }
 
+// Body returns the body of the request.
+func (req *Request) Body() string {
+	if req.body == nil {
+		req.bodyOnce.Do(func() {
+			buf := new(strings.Builder)
+			io.Copy(buf, req.request.Body)
+			body := buf.String()
+
+			req.body = &body
+		})
+	}
+
+	return *req.body
+}
+
 // Cookie returns the cookie by the specific name.
 func (req *Request) Cookie(key string) (*http.Cookie, error) {
 	return req.request.Cookie(key)
@@ -86,19 +101,9 @@ func (req *Request) RawQuery() string {
 	return req.request.URL.RawQuery
 }
 
-// Post returns the body of the request.
+// Post returns the body of the request, it's the alias of Request.Body().
 func (req *Request) Post() string {
-	if req.body == nil {
-		req.bodyOnce.Do(func() {
-			buf := new(strings.Builder)
-			io.Copy(buf, req.request.Body)
-			body := buf.String()
-
-			req.body = &body
-		})
-	}
-
-	return *req.body
+	return req.Body()
 }
 
 // PostForm returns the form data from the request by the specific key.
