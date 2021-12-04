@@ -80,6 +80,16 @@ func (req *Request) Path() string {
 	return req.request.URL.Path
 }
 
+// Post returns the body of the request, it's the alias of Request.Body().
+func (req *Request) Post() string {
+	return req.Body()
+}
+
+// PostForm returns the form data from the request by the specific key.
+func (req *Request) PostForm(key string) string {
+	return req.request.FormValue(key)
+}
+
 // Query returns the query string value from the request by the specific key.
 func (req *Request) Query(key string) string {
 	return req.request.FormValue(key)
@@ -99,14 +109,4 @@ func (req *Request) MultiValuesQuery(key string) []string {
 // RawQuery returns raw query string (withoud ?).
 func (req *Request) RawQuery() string {
 	return req.request.URL.RawQuery
-}
-
-// Post returns the body of the request, it's the alias of Request.Body().
-func (req *Request) Post() string {
-	return req.Body()
-}
-
-// PostForm returns the form data from the request by the specific key.
-func (req *Request) PostForm(key string) string {
-	return req.request.FormValue(key)
 }
