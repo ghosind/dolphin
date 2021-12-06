@@ -33,7 +33,7 @@ func (resp *Response) write(rw http.ResponseWriter) {
 			if cookie == nil {
 				continue
 			}
-			resp.AddHeader(HeaderSetCookie, cookie.String())
+			resp.AddHeader("Set-Cookie", cookie.String())
 		}
 	}
 

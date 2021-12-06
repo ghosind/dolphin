@@ -284,26 +284,26 @@ func (ctx *Context) JSON(data interface{}, statusCode ...int) error {
 		return err
 	}
 
-	return ctx.send(payload, MIMETypeJSON, statusCode...)
+	return ctx.send(payload, "application/json", statusCode...)
 }
 
 // HTML writes the given data to the response body as HTML, and set the content type
 // to "text/html".
 func (ctx *Context) HTML(html string, statusCode ...int) error {
-	return ctx.send([]byte(html), MIMETypeHTML, statusCode...)
+	return ctx.send([]byte(html), "text/html", statusCode...)
 }
 
 // String writes the given string to the response body, and sets the context type
 // to "text/plain".
 func (ctx *Context) String(data string, statusCode ...int) error {
-	return ctx.send([]byte(data), MIMETypeText, statusCode...)
+	return ctx.send([]byte(data), "text/plain", statusCode...)
 }
 
 // Redirect redirects the request to the given URL, it'll set status code to 302 (Found) as
 // default status code if it isn't set.
 func (ctx *Context) Redirect(url string, statusCode ...int) {
 	if url == "back" {
-		url = ctx.Request.Header(HeaderReferrer)
+		url = ctx.Request.Referer()
 	}
 
 	code := http.StatusFound
@@ -313,7 +313,7 @@ func (ctx *Context) Redirect(url string, statusCode ...int) {
 	}
 
 	ctx.Response.SetStatusCode(code)
-	ctx.Response.SetHeader(HeaderLocation, url)
+	ctx.Response.SetHeader("Location", url)
 }
 
 // Write writes the given data to the response body.
@@ -344,5 +344,5 @@ func (ctx *Context) SetStatusCode(code int) error {
 // SetContentType sets the response HTTP header "Content-Type" field to the
 // specific MIME type value.
 func (ctx *Context) SetContentType(contentType string) {
-	ctx.Response.SetHeader(HeaderContentType, contentType)
+	ctx.Response.SetHeader("Content-Type", contentType)
 }
