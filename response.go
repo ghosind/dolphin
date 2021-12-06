@@ -55,7 +55,7 @@ func (resp *Response) write(rw http.ResponseWriter) {
 }
 
 // SetBody sets response body.
-func (resp *Response) SetBody(data []byte) (int, error) {
+func (resp *Response) SetBody(data []byte) (len int, err error) {
 	return resp.body.Write(data)
 }
 

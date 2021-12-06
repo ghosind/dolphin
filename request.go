@@ -24,6 +24,12 @@ func (req *Request) reset() {
 	req.request = nil
 }
 
+// BasicAuth returns the username and password that provided in the request
+// header 'Authorization' field.
+func (req *Request) BasicAuth() (username, password string, ok bool) {
+	return req.request.BasicAuth()
+}
+
 // Body returns the body of the request.
 func (req *Request) Body() string {
 	if req.body == nil {
@@ -40,12 +46,12 @@ func (req *Request) Body() string {
 }
 
 // Cookie returns the cookie by the specific name.
-func (req *Request) Cookie(key string) (*http.Cookie, error) {
+func (req *Request) Cookie(key string) (cookie *http.Cookie, err error) {
 	return req.request.Cookie(key)
 }
 
 // File returns the file from multipart form by the specific key.
-func (req *Request) File(key string) (multipart.File, *multipart.FileHeader, error) {
+func (req *Request) File(key string) (file multipart.File, fileHeader *multipart.FileHeader, err error) {
 	return req.request.FormFile(key)
 }
 
@@ -109,4 +115,14 @@ func (req *Request) MultiValuesQuery(key string) []string {
 // RawQuery returns raw query string (withoud ?).
 func (req *Request) RawQuery() string {
 	return req.request.URL.RawQuery
+}
+
+// Referrer returns the referring URL of the request.
+func (req *Request) Referer() string {
+	return req.request.Referer()
+}
+
+// UserAgent returns the client user agent of the request.
+func (req *Request) UserAgent() string {
+	return req.request.UserAgent()
 }

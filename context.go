@@ -150,18 +150,24 @@ func (ctx *Context) Set(key string, val interface{}) interface{} {
 	return oldVal
 }
 
+// BasicAuth returns the username and password that provided in the request
+// header 'Authorization' field.
+func (ctx *Context) BasicAuth() (username, password string, ok bool) {
+	return ctx.Request.BasicAuth()
+}
+
 // Body returns the body of the request.
 func (ctx *Context) Body() string {
 	return ctx.Request.Body()
 }
 
 // Cookie returns the named cookie provided in the request.
-func (ctx *Context) Cookie(key string) (*http.Cookie, error) {
+func (ctx *Context) Cookie(key string) (cookie *http.Cookie, err error) {
 	return ctx.Request.Cookie(key)
 }
 
 // File returns the named file provided in the request.
-func (ctx *Context) File(key string) (multipart.File, *multipart.FileHeader, error) {
+func (ctx *Context) File(key string) (file multipart.File, fileHeader *multipart.FileHeader, err error) {
 	return ctx.Request.File(key)
 }
 
@@ -249,6 +255,16 @@ func (ctx *Context) RawQuery() string {
 	return ctx.Request.RawQuery()
 }
 
+// Referrer returns the referring URL of the request.
+func (ctx *Context) Referer() string {
+	return ctx.Request.Referer()
+}
+
+// UserAgent returns the client user agent of the request.
+func (ctx *Context) UserAgent() string {
+	return ctx.Request.UserAgent()
+}
+
 // Success writes the given data to the response body as JSON, and set the status code to 200 (OK).
 func (ctx *Context) Success(data interface{}) error {
 	return ctx.JSON(data, http.StatusOK)
@@ -301,7 +317,7 @@ func (ctx *Context) Redirect(url string, statusCode ...int) {
 }
 
 // Write writes the given data to the response body.
-func (ctx *Context) Write(data []byte) (int, error) {
+func (ctx *Context) Write(data []byte) (len int, err error) {
 	return ctx.Response.SetBody(data)
 }
 
