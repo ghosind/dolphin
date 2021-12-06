@@ -68,7 +68,7 @@ func (req *Request) MultiValuesHeader(key string) []string {
 
 // Host reads and returns the request "Host" header.
 func (req *Request) Host() string {
-	return req.Header("Host")
+	return req.request.Host
 }
 
 // IP returns the request client ip.
