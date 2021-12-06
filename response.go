@@ -62,7 +62,13 @@ func (resp *Response) SetBody(data []byte) (len int, err error) {
 // AddCookies adds cookies setting to response, it will set response HTTP
 // header "Set-Cookie" field.
 func (resp *Response) AddCookies(cookies ...*http.Cookie) {
-	resp.cookies = append(resp.cookies, cookies...)
+	for _, cookie := range cookies {
+		if cookie == nil {
+			continue
+		}
+
+		resp.cookies = append(resp.cookies, cloneCookie(cookie))
+	}
 }
 
 // AddHeader adds value to the specific response HTTP header field.
@@ -89,4 +95,28 @@ func (resp *Response) SetStatusCode(code int) error {
 // StatusCode gets the response status code.
 func (resp *Response) StatusCode() int {
 	return resp.statusCode
+}
+
+// cloneCookie clones a cookie.
+func cloneCookie(cookie *http.Cookie) *http.Cookie {
+	if cookie == nil {
+		return nil
+	}
+
+	unparsed := make([]string, 0, len(cookie.Unparsed))
+	unparsed = append(unparsed, cookie.Unparsed...)
+
+	return &http.Cookie{
+		Name:       cookie.Name,
+		Value:      cookie.Value,
+		Path:       cookie.Path,
+		Domain:     cookie.Domain,
+		Expires:    cookie.Expires,
+		RawExpires: cookie.RawExpires,
+		MaxAge:     cookie.MaxAge,
+		Secure:     cookie.Secure,
+		HttpOnly:   cookie.HttpOnly,
+		Raw:        cookie.Raw,
+		Unparsed:   unparsed,
+	}
 }
