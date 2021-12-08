@@ -13,8 +13,8 @@ type Config struct {
 }
 
 // Recover returns a middleware that recovers from panics, and it'll return 500 error default.
-func Recover(config *Config) dolphin.HandlerFunc {
-	cfg := getConfig()
+func Recover(config ...*Config) dolphin.HandlerFunc {
+	cfg := getConfig(config...)
 
 	return func(ctx *dolphin.Context) {
 		defer func() {
@@ -29,7 +29,7 @@ func Recover(config *Config) dolphin.HandlerFunc {
 	}
 }
 
-func getConfig(config ...Config) *Config {
+func getConfig(config ...*Config) *Config {
 	cfg := Config{
 		Handler: defaultHandler,
 	}
