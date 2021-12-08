@@ -38,14 +38,14 @@ func debugPrintf(format string, args ...interface{}) {
 // environment variable `DOLPHIN_PORT`. Port number of listening should
 // be greater than 0 and less than 65536.
 func resolveListenAddr(port *int) string {
-	if port != nil && *port > 0 && *port < 65536 {
+	if port != nil && isValidPort(*port) {
 		return fmt.Sprintf(":%d", *port)
 	}
 
 	envPort := os.Getenv("DOLPHIN_PORT")
 	if envPort != "" {
 		port, err := strconv.Atoi(envPort)
-		if err != nil || port <= 0 || port > 65535 {
+		if err != nil || !isValidPort(port) {
 			debugPrintf("Environment variable \"DOLPHIN_PORT\"(%s) is invalid: %s", envPort)
 			return defaultPort
 		}
@@ -55,4 +55,9 @@ func resolveListenAddr(port *int) string {
 
 	debugPrintf("No port setting, use default port 8080.")
 	return defaultPort
+}
+
+// isValidPort checks if the port number is valid.
+func isValidPort(port int) bool {
+	return port > 0 && port < 65536
 }
