@@ -255,7 +255,7 @@ func (ctx *Context) RawQuery() string {
 	return ctx.Request.RawQuery()
 }
 
-// Referrer returns the referring URL of the request.
+// Referer returns the referring URL of the request.
 func (ctx *Context) Referer() string {
 	return ctx.Request.Referer()
 }

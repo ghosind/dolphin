@@ -117,7 +117,7 @@ func (req *Request) RawQuery() string {
 	return req.request.URL.RawQuery
 }
 
-// Referrer returns the referring URL of the request.
+// Referer returns the referring URL of the request.
 func (req *Request) Referer() string {
 	return req.request.Referer()
 }
