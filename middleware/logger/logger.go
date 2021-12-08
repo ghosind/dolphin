@@ -8,8 +8,8 @@ import (
 	"github.com/ghosind/dolphin"
 )
 
-// LoggerCongfig is the config for Logger middleware.
-type LoggerCongfig struct {
+// Congfig is the config for Logger middleware.
+type Congfig struct {
 	// Format is the log format.
 	Format *string
 	Output *io.Writer
@@ -29,7 +29,7 @@ type requestLogData struct {
 }
 
 // Logger is the builtin logger middleware for log requests' information.
-func Logger(config ...LoggerCongfig) dolphin.HandlerFunc {
+func Logger(config ...Congfig) dolphin.HandlerFunc {
 	cfg := getConfig(config...)
 	tpl := template.Must(template.New("LoggerFormat").Parse(*cfg.Format))
 
@@ -60,7 +60,7 @@ func Logger(config ...LoggerCongfig) dolphin.HandlerFunc {
 	}
 }
 
-func getConfig(cfg ...LoggerCongfig) *LoggerCongfig {
+func getConfig(cfg ...Congfig) *Congfig {
 	config := getDefaultConfig()
 
 	if len(cfg) > 0 {
@@ -77,10 +77,10 @@ func getConfig(cfg ...LoggerCongfig) *LoggerCongfig {
 	return config
 }
 
-func getDefaultConfig() *LoggerCongfig {
+func getDefaultConfig() *Congfig {
 	defaultFormat := "{{.Method}} {{.Path}} {{.StatusCode}} {{.MilLatency}}ms"
 
-	return &LoggerCongfig{
+	return &Congfig{
 		Format: &defaultFormat,
 		Output: nil,
 	}
