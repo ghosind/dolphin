@@ -21,7 +21,7 @@ func main() {
 
 ## API
 
-- `Recovery(config ...Config) dolphin.HandlerFunc`
+- `Recover(config ...Config) dolphin.HandlerFunc`
 
   Creates and returns a new recover middleware.
 
