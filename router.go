@@ -12,6 +12,7 @@ type RouterConfig struct {
 
 type Router struct {
 	NotFoundHandler HandlerFunc
+	handlers        HandlerChain
 	nodeTree        map[string]*routerNode
 	rm              sync.Mutex
 }
@@ -31,6 +32,7 @@ func DefaultNotFoundHandler(ctx *Context) {
 func NewRouter(config ...RouterConfig) *Router {
 	router := &Router{
 		NotFoundHandler: DefaultNotFoundHandler,
+		handlers:        make(HandlerChain, 0),
 		rm:              sync.Mutex{},
 	}
 
@@ -44,12 +46,24 @@ func NewRouter(config ...RouterConfig) *Router {
 	return router
 }
 
+func (router *Router) Use(handler ...HandlerFunc) *Router {
+	if len(handler) > 0 {
+		router.handlers = append(router.handlers, handler...)
+	}
+
+	return router
+}
+
 // Routes returns the handler for this router.
 func (router *Router) Routes() HandlerFunc {
 	return func(ctx *Context) {
 		node := router.getRouterNode(ctx.Method(), ctx.Path())
 
 		if node != nil {
+			if len(router.handlers) > 0 {
+				ctx.handlers = append(router.handlers, node.handlers...)
+			}
+
 			ctx.Use(node.handlers...)
 			ctx.Next()
 		} else if router.NotFoundHandler != nil {
@@ -154,7 +168,7 @@ func (router *Router) getRouterNode(method string, path string) *routerNode {
 	return node
 }
 
-func (root *routerNode) addRouterNode(path string, handlers ...HandlerFunc) {
+func (root *routerNode) addRouterNode(path string, handler ...HandlerFunc) {
 	node := root
 	paths := resolvePath(path)
 
@@ -170,7 +184,10 @@ func (root *routerNode) addRouterNode(path string, handlers ...HandlerFunc) {
 		node = child
 	}
 
-	node.handlers = handlers
+	node.handlers = make(HandlerChain, 0, len(handler))
+	if len(handler) > 0 {
+		node.handlers = append(node.handlers, handler...)
+	}
 }
 
 func resolvePath(path string) []string {
