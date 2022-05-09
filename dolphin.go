@@ -12,8 +12,8 @@ type HandlerFunc func(*Context)
 // HandlerChain is a chain of handlers.
 type HandlerChain []HandlerFunc
 
-// O is an alias for map that contains string key and interface{} value.
-type O map[string]interface{}
+// O is an alias for map that contains string key and any type value.
+type O map[string]any
 
 // Config is the configuration for the dolphin web application.
 type Config struct {
@@ -49,17 +49,17 @@ func New(config *Config) *App {
 		port:     config.Port,
 		handlers: HandlerChain{},
 		pool: &sync.Pool{
-			New: func() interface{} {
+			New: func() any {
 				return allocateContext()
 			},
 		},
 		reqPool: &sync.Pool{
-			New: func() interface{} {
+			New: func() any {
 				return &Request{}
 			},
 		},
 		resPool: &sync.Pool{
-			New: func() interface{} {
+			New: func() any {
 				return &Response{}
 			},
 		},

@@ -27,7 +27,7 @@ type Context struct {
 	sm sync.RWMutex
 	// state is the context state, it can be used to store any data and pass to
 	// the next handlers.
-	state map[string]interface{}
+	state map[string]any
 }
 
 // allocateContext returns a new context instance.
@@ -48,7 +48,7 @@ func (ctx *Context) reset(app *App, req *http.Request) {
 	ctx.handlers = HandlerChain{}
 	ctx.index = -1
 	ctx.isAbort = false
-	ctx.state = map[string]interface{}{}
+	ctx.state = map[string]any{}
 
 	ctx.Use(app.handlers...)
 }
@@ -114,7 +114,7 @@ func (ctx *Context) Use(handler ...HandlerFunc) *Context {
 }
 
 // Log call the app logger with the given format and args.
-func (ctx *Context) Log(fmt string, args ...interface{}) {
+func (ctx *Context) Log(fmt string, args ...any) {
 	ctx.app.log(fmt, args...)
 }
 
@@ -124,7 +124,7 @@ func (ctx *Context) LoggerWriter() io.Writer {
 }
 
 // Get retrieves the value of the given key from the context state.
-func (ctx *Context) Get(key string) (interface{}, bool) {
+func (ctx *Context) Get(key string) (any, bool) {
 	ctx.sm.RLock()
 	defer ctx.sm.RUnlock()
 
@@ -144,7 +144,7 @@ func (ctx *Context) Has(key string) bool {
 }
 
 // Set sets the value of the given key to the context state.
-func (ctx *Context) Set(key string, val interface{}) interface{} {
+func (ctx *Context) Set(key string, val any) any {
 	ctx.sm.Lock()
 	defer ctx.sm.Unlock()
 
@@ -206,7 +206,7 @@ func (ctx *Context) Post() string {
 }
 
 // PostJSON gets request body and parses to the given struct.
-func (ctx *Context) PostJSON(payload interface{}) error {
+func (ctx *Context) PostJSON(payload any) error {
 	body := ctx.Request.Body()
 
 	err := json.Unmarshal([]byte(body), payload)
@@ -270,19 +270,19 @@ func (ctx *Context) UserAgent() string {
 }
 
 // Success writes the given data to the response body as JSON, and set the status code to 200 (OK).
-func (ctx *Context) Success(data interface{}) error {
+func (ctx *Context) Success(data any) error {
 	return ctx.JSON(data, http.StatusOK)
 }
 
 // Fail writes the given data to the response body as JSON, and set the status code
 // to 400 (Bad Request).
-func (ctx *Context) Fail(data interface{}) error {
+func (ctx *Context) Fail(data any) error {
 	return ctx.JSON(data, http.StatusBadRequest)
 }
 
 // JSON stringifies and writes the given data to the response body, and set the content type
 // to "application/json".
-func (ctx *Context) JSON(data interface{}, statusCode ...int) error {
+func (ctx *Context) JSON(data any, statusCode ...int) error {
 	payload, err := json.Marshal(data)
 	if err != nil {
 		return err

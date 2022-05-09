@@ -24,7 +24,7 @@ func setDebugMode() {
 }
 
 // debugPrintf prints message if debug mode is enabled.
-func debugPrintf(format string, args ...interface{}) {
+func debugPrintf(format string, args ...any) {
 	if !debugMode {
 		return
 	}

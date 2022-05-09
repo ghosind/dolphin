@@ -139,7 +139,7 @@ func (app *App) initServer() {
 }
 
 // log logs a message to the app's logger or log.Printf.
-func (app *App) log(fmt string, args ...interface{}) {
+func (app *App) log(fmt string, args ...any) {
 	logger := log.Printf
 	if app.logger != nil {
 		logger = app.logger.Printf
