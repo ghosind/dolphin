@@ -105,8 +105,12 @@ func (ctx *Context) Next() {
 }
 
 // Use registers one or more middlewares or request handlers to the context.
-func (ctx *Context) Use(handlers ...HandlerFunc) {
-	ctx.handlers = append(ctx.handlers, handlers...)
+func (ctx *Context) Use(handler ...HandlerFunc) *Context {
+	if len(handler) > 0 {
+		ctx.handlers = append(ctx.handlers, handler...)
+	}
+
+	return ctx
 }
 
 // Log call the app logger with the given format and args.

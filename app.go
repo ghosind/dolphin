@@ -82,8 +82,12 @@ func (app *App) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 }
 
 // Use registers one or more middlewares or request handlers to the app.
-func (app *App) Use(handlers ...HandlerFunc) {
-	app.handlers = append(app.handlers, handlers...)
+func (app *App) Use(handler ...HandlerFunc) *App {
+	if len(handler) == 0 {
+		app.handlers = append(app.handlers, handler...)
+	}
+
+	return app
 }
 
 // CertFile returns the app TLS certificate file.
