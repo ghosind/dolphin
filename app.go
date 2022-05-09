@@ -83,7 +83,7 @@ func (app *App) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 
 // Use registers one or more middlewares or request handlers to the app.
 func (app *App) Use(handler ...HandlerFunc) *App {
-	if len(handler) == 0 {
+	if len(handler) > 0 {
 		app.handlers = append(app.handlers, handler...)
 	}
 
