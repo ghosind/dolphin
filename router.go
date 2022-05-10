@@ -64,7 +64,7 @@ func (router *Router) Routes() HandlerFunc {
 
 		if node != nil {
 			if len(router.handlers) > 0 {
-				ctx.handlers = append(router.handlers, node.handlers...)
+				ctx.Use(router.handlers...)
 			}
 			if len(pathVariables) > 0 {
 				for k, v := range pathVariables {
