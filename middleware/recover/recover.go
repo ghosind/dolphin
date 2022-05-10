@@ -11,7 +11,12 @@ type PanicError struct {
 	// Err is the error that caused the panic.
 	Err error
 	// StackTrace is the stack trace of the panic.
-	StackTrace string
+	StackTrace []byte
+}
+
+// Error returns panic error message.
+func (err PanicError) Error() string {
+	return err.Err.Error()
 }
 
 type RecoverHandler func(*dolphin.Context, *PanicError)
@@ -25,7 +30,7 @@ func Recover(config ...Config) dolphin.HandlerFunc {
 			if err := recover(); err != nil {
 				e := PanicError{
 					Err:        err.(error),
-					StackTrace: string(debug.Stack()),
+					StackTrace: debug.Stack(),
 				}
 
 				if cfg.Handler != nil {
