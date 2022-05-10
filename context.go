@@ -23,6 +23,8 @@ type Context struct {
 	// isAbort is the flag to indicate if the current handler chain should be
 	// aborted.
 	isAbort bool
+	// pathVariables stores current request path variables.
+	pathVariables map[string]string
 	// sm is the mutex for protecting the context state.
 	sm sync.RWMutex
 	// state is the context state, it can be used to store any data and pass to
@@ -48,7 +50,8 @@ func (ctx *Context) reset(app *App, req *http.Request) {
 	ctx.handlers = HandlerChain{}
 	ctx.index = -1
 	ctx.isAbort = false
-	ctx.state = map[string]any{}
+	ctx.pathVariables = make(map[string]string)
+	ctx.state = make(map[string]any)
 
 	ctx.Use(app.handlers...)
 }
@@ -87,6 +90,14 @@ func (ctx *Context) send(data []byte, contentType string, statusCode ...int) err
 	}
 
 	return nil
+}
+
+// addPathVariable adds the given path variable to the context.
+func (ctx *Context) addPathVariable(key string, value string) {
+	ctx.sm.Lock()
+	defer ctx.sm.Unlock()
+
+	ctx.pathVariables[key] = value
 }
 
 // Abort stops the current handler chain.
@@ -198,6 +209,11 @@ func (ctx *Context) Method() string {
 // Path returns the request path.
 func (ctx *Context) Path() string {
 	return ctx.Request.Path()
+}
+
+// PathVariable returns the path variable by the given key.
+func (ctx *Context) PathVariable(key string) string {
+	return ctx.pathVariables[key]
 }
 
 // Post returns the request post data.

@@ -18,8 +18,10 @@ type Router struct {
 }
 
 type routerNode struct {
-	children map[string]*routerNode
-	handlers HandlerChain
+	children      map[string]*routerNode
+	handlers      HandlerChain
+	wildcardChild *routerNode
+	pathVarName   string
 }
 
 // DefaultNotFoundHandler is the default handler for 404 requests.
@@ -57,11 +59,17 @@ func (router *Router) Use(handler ...HandlerFunc) *Router {
 // Routes returns the handler for this router.
 func (router *Router) Routes() HandlerFunc {
 	return func(ctx *Context) {
-		node := router.getRouterNode(ctx.Method(), ctx.Path())
+		pathVariables := make(map[string]string)
+		node := router.getRouterNode(ctx.Method(), ctx.Path(), pathVariables)
 
 		if node != nil {
 			if len(router.handlers) > 0 {
 				ctx.handlers = append(router.handlers, node.handlers...)
+			}
+			if len(pathVariables) > 0 {
+				for k, v := range pathVariables {
+					ctx.addPathVariable(k, v)
+				}
 			}
 
 			ctx.Use(node.handlers...)
@@ -148,7 +156,7 @@ func (router *Router) addRouterNode(method string, path string, handlers ...Hand
 	tree.addRouterNode(path, handlers...)
 }
 
-func (router *Router) getRouterNode(method string, path string) *routerNode {
+func (router *Router) getRouterNode(method string, path string, pathVariables map[string]string) *routerNode {
 	node := router.nodeTree[method]
 	if node == nil {
 		return nil
@@ -159,7 +167,12 @@ func (router *Router) getRouterNode(method string, path string) *routerNode {
 		child := node.children[p]
 
 		if child == nil {
-			return nil
+			if node.wildcardChild == nil {
+				return nil
+			}
+
+			child = node.wildcardChild
+			pathVariables[child.pathVarName] = p
 		}
 
 		node = child
@@ -169,16 +182,30 @@ func (router *Router) getRouterNode(method string, path string) *routerNode {
 }
 
 func (root *routerNode) addRouterNode(path string, handler ...HandlerFunc) {
+	var child *routerNode
 	node := root
 	paths := resolvePath(path)
 
 	for _, p := range paths {
-		child := node.children[p]
+		isWildcard := false
+
+		if strings.HasPrefix(p, ":") {
+			child = node.wildcardChild
+			isWildcard = true
+		} else {
+			child = node.children[p]
+		}
+
 		if child == nil {
 			child = new(routerNode)
 			child.children = make(map[string]*routerNode)
 
-			node.children[p] = child
+			if isWildcard {
+				node.wildcardChild = child
+				node.pathVarName = p[1:]
+			} else {
+				node.children[p] = child
+			}
 		}
 
 		node = child
